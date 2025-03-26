@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Welcome Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/welcomeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Welcome back!"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"/>
+
+                    <TextView
+                        android:id="@+id/userNameText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="User"
+                        android:textSize="18sp"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginTop="4dp"/>
+
+                    <TextView
+                        android:id="@+id/userEmailText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="user@example.com"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Quick Actions Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quick Actions"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <!-- Add Meal Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/addMealButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="4dp"
+                        android:text="Add Meal"
+                        android:textColor="@color/white"
+                        app:icon="@drawable/ic_add"
+                        app:iconTint="@color/white"
+                        app:cornerRadius="8dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                    <!-- Add Grocery Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/addGroceryButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="4dp"
+                        android:text="Add Grocery"
+                        android:textColor="@color/white"
+                        app:icon="@drawable/ic_grocery"
+                        app:iconTint="@color/white"
+                        app:cornerRadius="8dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Recent Meals Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recent Meals"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recentMealsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"/>
+
+            <!-- Empty State -->
+            <LinearLayout
+                android:id="@+id/emptyStateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/ic_restaurant"
+                    android:tint="@color/text_secondary"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No meals added yet"
+                    android:textSize="18sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="16dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/emptyStateAddMealButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Your First Meal"
+                    android:layout_marginTop="16dp"
+                    app:icon="@drawable/ic_add"
+                    app:iconTint="@color/white"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- FAB for adding new meal -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddMeal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add"
+        app:tint="@color/white"
+        app:backgroundTint="@color/primary"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout> 

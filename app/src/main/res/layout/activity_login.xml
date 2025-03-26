@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="32dp"
+            android:contentDescription="App Logo"
+            android:src="@mipmap/ic_launcher" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Email"
+            app:startIconDrawable="@android:drawable/ic_dialog_email">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Password"
+            app:endIconMode="password_toggle"
+            app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <CheckBox
+            android:id="@+id/checkBoxRememberMe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Remember me" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Login" />
+
+        <TextView
+            android:id="@+id/textViewRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Don't have an account? Register"
+            android:textColor="@android:color/holo_blue_dark" />
+
+    </LinearLayout>
+
+</ScrollView> 

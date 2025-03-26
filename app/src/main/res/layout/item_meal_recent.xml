@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_meal_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Meal Name"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_meal_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Meal Category"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_ingredient_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="5 ingredients"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_copy_meal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/copy_meal"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_menu_save" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView> 

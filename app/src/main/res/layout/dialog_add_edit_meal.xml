@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Image Section -->
+        <ImageView
+            android:id="@+id/iv_meal_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:contentDescription="Meal image"/>
+
+        <Button
+            android:id="@+id/btn_add_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Image"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Meal Name -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Meal Name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_meal_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Category Spinner -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:layout_marginTop="16dp"/>
+
+        <Spinner
+            android:id="@+id/spinner_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"/>
+
+        <!-- Preparation Time -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Preparation Time (minutes)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_prep_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Ingredients Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingredients"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btn_add_ingredient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Ingredient"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_empty_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No ingredients added yet"
+            android:gravity="center"
+            android:padding="8dp"
+            android:visibility="visible"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <!-- Instructions Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Instructions"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Add instruction step">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_instruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="2"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_add_instruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Step"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_empty_instructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No instructions added yet"
+            android:gravity="center"
+            android:padding="8dp"
+            android:visibility="visible"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_instructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                style="@style/Widget.MaterialComponents.Button.TextButton"/>
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView> 

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="56dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/welcomeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Welcome to MealMate!"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+            android:layout_marginBottom="24dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardAddMeal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_food"
+                    android:contentDescription="@string/add_meal"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_meal"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Add a new meal to your collection"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardGroceryList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_grocery"
+                    android:contentDescription="@string/view_grocery_list"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/view_grocery_list"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="See what ingredients you need"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardManageItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_inventory"
+                    android:contentDescription="@string/manage_my_items"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/manage_my_items"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Organize your pantry inventory"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/logout"
+            android:drawableStart="@drawable/ic_logout"
+            android:drawablePadding="8dp"
+            android:paddingVertical="12dp"
+            app:icon="@drawable/ic_logout"
+            app:iconGravity="textStart"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

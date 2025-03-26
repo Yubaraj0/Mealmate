@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.mealmateyubraj.fragments.HomeFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_homeFragment_to_addMealFragment"
+            app:destination="@id/addMealFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_groceryListFragment"
+            app:destination="@id/navigation_groceries" />
+        <action
+            android:id="@+id/action_homeFragment_to_recentMealsFragment"
+            app:destination="@id/navigation_meals" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_meals"
+        android:name="com.example.mealmateyubraj.fragments.MealsFragment"
+        android:label="Meals">
+        <action
+            android:id="@+id/action_mealsFragment_to_addMealFragment"
+            app:destination="@id/addMealFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_groceries"
+        android:name="com.example.mealmateyubraj.fragments.GroceryFragment"
+        android:label="Groceries" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.mealmateyubraj.fragments.ProfileFragment"
+        android:label="Profile" />
+
+    <fragment
+        android:id="@+id/addMealFragment"
+        android:name="com.example.mealmateyubraj.fragments.AddMealFragment"
+        android:label="Add Meal">
+        <argument
+            android:name="mealId"
+            app:argType="long"
+            app:nullable="true"
+            android:defaultValue="null" />
+    </fragment>
+
+</navigation> 

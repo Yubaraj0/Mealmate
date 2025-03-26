@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/checkbox_grocery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_grocery_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/tv_grocery_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray" />
+
+                <TextView
+                    android:id="@+id/tv_purchased_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Purchased"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/holo_green_dark"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_edit_grocery"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="Edit item"
+                android:layout_marginEnd="8dp" />
+
+            <ImageView
+                android:id="@+id/iv_delete_grocery"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_delete"
+                android:contentDescription="Delete item" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView> 

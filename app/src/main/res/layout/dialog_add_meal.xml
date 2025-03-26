@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/background_beige">
+    
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add New Recipe"
+            android:textSize="24sp"
+            android:textColor="@color/text_primary"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+    
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+            
+            <androidx.cardview.widget.CardView
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="12dp">
+                
+                <ImageView
+                    android:id="@+id/iv_meal_image_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_photo_placeholder"
+                    android:contentDescription="Meal image preview"
+                    android:background="@drawable/edit_text_background"/>
+            </androidx.cardview.widget.CardView>
+                
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Image"
+                android:drawableLeft="@android:drawable/ic_menu_gallery"
+                android:drawablePadding="8dp"
+                android:backgroundTint="@color/brown_button"
+                android:textColor="@android:color/white"
+                app:cornerRadius="24dp"/>
+        </LinearLayout>
+    
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:boxBackgroundColor="@color/background_beige"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dialog_meal_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Recipe Name"
+                android:inputType="textCapSentences"/>
+        </com.google.android.material.textfield.TextInputLayout>
+    
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/background_beige"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dialog_prep_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Preparation Time (minutes)"
+                android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+    
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ingredients"
+            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp"/>
+    
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="4dp"/>
+            
+        <Spinner
+            android:id="@+id/spinner_dialog_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:spinnerMode="dropdown"/>
+    
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+    
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_ingredient_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name"/>
+            </com.google.android.material.textfield.TextInputLayout>
+    
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_ingredient_qty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Qty"
+                    android:inputType="numberDecimal"/>
+            </com.google.android.material.textfield.TextInputLayout>
+    
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_ingredient_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Unit"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_dialog_add_ingredient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Ingredient"
+            android:backgroundTint="@color/brown_button"
+            android:textColor="@android:color/white"
+            app:cornerRadius="24dp"
+            android:layout_marginBottom="8dp"/>
+    
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_dialog_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp"
+            android:minHeight="80dp"/>
+    
+        <TextView
+            android:id="@+id/tv_dialog_empty_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No ingredients added yet"
+            android:textAlignment="center"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="16dp"
+            android:padding="16dp"
+            android:background="@drawable/edit_text_background"/>
+    
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Instructions"
+            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp"/>
+    
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dialog_instructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Add Instruction"
+                android:inputType="textMultiLine"
+                android:minLines="3"/>
+        </com.google.android.material.textfield.TextInputLayout>
+    
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_dialog_add_instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Instruction"
+            android:backgroundTint="@color/brown_button"
+            android:textColor="@android:color/white"
+            app:cornerRadius="24dp"
+            android:layout_marginBottom="8dp"/>
+    
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_dialog_instructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp"
+            android:minHeight="80dp"/>
+    
+        <TextView
+            android:id="@+id/tv_dialog_empty_instructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_instructions_added"
+            android:textAlignment="center"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="16dp"
+            android:padding="16dp"
+            android:background="@drawable/edit_text_background"/>
+    
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+    
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_dialog_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textColor="@color/brown_button"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_marginEnd="16dp"/>
+    
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_dialog_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:backgroundTint="@color/brown_button"
+                android:textColor="@android:color/white"
+                app:cornerRadius="24dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView> 
