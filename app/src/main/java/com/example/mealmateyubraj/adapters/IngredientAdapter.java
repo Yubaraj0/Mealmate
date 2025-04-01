@@ -111,10 +111,12 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     }
 
     /**
-     * Update the ingredients list
+     * Updates the ingredient list with a new list
+     *
+     * @param ingredients The new list of ingredients
      */
     public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients != null ? ingredients : new ArrayList<>();
+        this.ingredients = ingredients;
         notifyDataSetChanged();
     }
 

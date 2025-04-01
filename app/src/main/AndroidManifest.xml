@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.mealmateyubraj">
 
+    <!-- Storage permissions for accessing gallery images -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
     <application
         android:name=".MealmateApplication"
         android:allowBackup="true"
@@ -55,11 +60,7 @@
     
     <!-- Storage permissions -->
     <!-- For Android 12 and lower (API level 32 and lower) -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    
-    <!-- For Android 13+ (API level 33+) -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     
     <!-- Camera permission if needed -->
     <uses-permission android:name="android.permission.CAMERA" />

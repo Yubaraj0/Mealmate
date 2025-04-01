@@ -164,7 +164,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
+            Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
         try {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             
@@ -598,23 +598,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             
             if (cursor.moveToFirst()) {
                 do {
-                    GroceryItem item = new GroceryItem();
-                    item.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
-                    item.setName(cursor.getString(cursor.getColumnIndex(COLUMN_GROCERY_NAME)));
-                    item.setCategory(cursor.getString(cursor.getColumnIndex(COLUMN_GROCERY_CATEGORY)));
-                    item.setQuantity(cursor.getFloat(cursor.getColumnIndex(COLUMN_GROCERY_QUANTITY)));
-                    item.setUnit(cursor.getString(cursor.getColumnIndex(COLUMN_GROCERY_UNIT)));
-                    item.setPurchased(cursor.getInt(cursor.getColumnIndex(COLUMN_GROCERY_IS_PURCHASED)) == 1);
-                    item.setUserId(userId);
-                    
-                    // Get meal ID if present
-                    int mealIdColumnIndex = cursor.getColumnIndex(COLUMN_GROCERY_MEAL_ID);
-                    if (mealIdColumnIndex != -1 && !cursor.isNull(mealIdColumnIndex)) {
-                        item.setMealId(cursor.getLong(mealIdColumnIndex));
-                    }
-                    
+                    GroceryItem item = cursorToGroceryItem(cursor);
                     groceryItems.add(item);
-                    Log.d(TAG, "Added grocery item: " + item.getName() + 
+                    Log.d(TAG, "Added grocery item: " + item.getItemName() + 
                            " (" + item.getQuantity() + " " + item.getUnit() + ")");
                 } while (cursor.moveToNext());
             }
@@ -892,7 +878,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Get all ingredients for a specific meal
-     * 
+     *
      * @param mealId The ID of the meal
      * @return A list of Ingredient objects
      */
@@ -903,21 +889,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         
         try {
             db = this.getReadableDatabase();
-            String query = "SELECT i.*, mi.quantity FROM " + TABLE_INGREDIENTS + " i " +
-                    "INNER JOIN " + TABLE_MEAL_INGREDIENTS + " mi " +
-                    "ON i." + COLUMN_ID + " = mi." + COLUMN_INGREDIENT_ID + " " +
-                    "WHERE mi." + COLUMN_MEAL_ID + " = ?";
+            String query = "SELECT i.*, mi.quantity FROM " + TABLE_INGREDIENTS + " i "
+                    + "INNER JOIN " + TABLE_MEAL_INGREDIENTS + " mi "
+                    + "ON i." + COLUMN_ID + " = mi." + COLUMN_INGREDIENT_ID + " "
+                    + "WHERE mi." + COLUMN_MEAL_ID + " = ?";
             cursor = db.rawQuery(query, new String[]{String.valueOf(mealId)});
             
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    int idIndex = cursor.getColumnIndex(COLUMN_ID);
+                int idIndex = cursor.getColumnIndex(COLUMN_ID);
                     int nameIndex = cursor.getColumnIndex(COLUMN_INGREDIENT_NAME);
                     int quantityIndex = cursor.getColumnIndex(COLUMN_QUANTITY);
                     int unitIndex = cursor.getColumnIndex(COLUMN_INGREDIENT_UNIT);
-                    
-                    long id = cursor.getLong(idIndex);
-                    String name = cursor.getString(nameIndex);
+                
+                long id = cursor.getLong(idIndex);
+                String name = cursor.getString(nameIndex);
                     double quantity = cursor.getDouble(quantityIndex);
                     String unit = cursor.getString(unitIndex);
                     
@@ -936,12 +922,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return ingredients;
     }
 
-    // Add a grocery item
+    private GroceryItem cursorToGroceryItem(Cursor cursor) {
+        GroceryItem item = new GroceryItem();
+        item.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
+        item.setItemName(cursor.getString(cursor.getColumnIndex(COLUMN_GROCERY_NAME)));
+        item.setCategory(cursor.getString(cursor.getColumnIndex(COLUMN_GROCERY_CATEGORY)));
+        item.setQuantity(cursor.getString(cursor.getColumnIndex(COLUMN_GROCERY_QUANTITY)));
+        item.setUnit(cursor.getString(cursor.getColumnIndex(COLUMN_GROCERY_UNIT)));
+        item.setPurchased(cursor.getInt(cursor.getColumnIndex(COLUMN_GROCERY_IS_PURCHASED)) == 1);
+        item.setUserId(cursor.getLong(cursor.getColumnIndex(COLUMN_GROCERY_USER_ID)));
+        
+        int mealIdColumnIndex = cursor.getColumnIndex(COLUMN_GROCERY_MEAL_ID);
+        if (mealIdColumnIndex != -1 && !cursor.isNull(mealIdColumnIndex)) {
+            item.setMealId(cursor.getLong(mealIdColumnIndex));
+        }
+        
+        return item;
+    }
+
     public long addGroceryItem(GroceryItem item) {
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_GROCERY_NAME, item.getName());
-        values.put(COLUMN_GROCERY_CATEGORY, item.getCategory()); 
+        values.put(COLUMN_GROCERY_NAME, item.getItemName());
+        values.put(COLUMN_GROCERY_CATEGORY, item.getCategory());
         values.put(COLUMN_GROCERY_QUANTITY, item.getQuantity());
         values.put(COLUMN_GROCERY_UNIT, item.getUnit());
         values.put(COLUMN_GROCERY_IS_PURCHASED, item.isPurchased() ? 1 : 0);
@@ -949,39 +951,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (item.getMealId() > 0) {
             values.put(COLUMN_GROCERY_MEAL_ID, item.getMealId());
         }
-        
-        long id = db.insert(TABLE_GROCERY_ITEMS, null, values);
-        Log.d(TAG, "Added grocery item with ID: " + id + ", name: " + item.getName());
-        return id;
+
+        return getWritableDatabase().insert(TABLE_GROCERY_ITEMS, null, values);
     }
 
-    // Update a grocery item
     public boolean updateGroceryItem(GroceryItem item) {
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_GROCERY_NAME, item.getName());
+        values.put(COLUMN_GROCERY_NAME, item.getItemName());
         values.put(COLUMN_GROCERY_CATEGORY, item.getCategory());
         values.put(COLUMN_GROCERY_QUANTITY, item.getQuantity());
         values.put(COLUMN_GROCERY_UNIT, item.getUnit());
         values.put(COLUMN_GROCERY_IS_PURCHASED, item.isPurchased() ? 1 : 0);
-        
-        int result = db.update(TABLE_GROCERY_ITEMS, values, 
-            COLUMN_ID + " = ? AND " + COLUMN_GROCERY_USER_ID + " = ?", 
-            new String[]{String.valueOf(item.getId()), String.valueOf(item.getUserId())});
-        
-        Log.d(TAG, "Updated grocery item with ID: " + item.getId() + ", result: " + result);
-        return result > 0;
-    }
 
-    // Delete a grocery item
-    public boolean deleteGroceryItemForUser(long id, long userId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete(TABLE_GROCERY_ITEMS, 
-            COLUMN_ID + " = ? AND " + COLUMN_GROCERY_USER_ID + " = ?", 
-            new String[]{String.valueOf(id), String.valueOf(userId)});
-        
-        Log.d(TAG, "Deleted grocery item with ID: " + id + ", user ID: " + userId + ", result: " + result);
-        return result > 0;
+        return getWritableDatabase().update(
+                TABLE_GROCERY_ITEMS,
+                values,
+                COLUMN_ID + " = ?",
+                new String[]{String.valueOf(item.getId())}) > 0;
     }
 
     public User authenticateUser(String email, String password) {
@@ -994,7 +980,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String[] selectionArgs = {email, password};
 
             Cursor cursor = db.query(TABLE_USERS, columns, selection, selectionArgs, null, null, null);
-
+            
             if (cursor != null && cursor.moveToFirst()) {
                 user = new User();
                 user.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID)));
@@ -1049,11 +1035,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 user.setRememberMe(cursor.getInt(cursor.getColumnIndex(COLUMN_REMEMBER_ME)) == 1);
             }
             
-            cursor.close();
+                cursor.close();
         } catch (Exception e) {
             Log.e(TAG, "Error getting user by ID: " + e.getMessage());
         }
         
         return user;
+    }
+
+    public void insertMealIngredient(long mealId, Ingredient ingredient) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        
+        // First insert the ingredient
+        ContentValues ingredientValues = new ContentValues();
+        ingredientValues.put(COLUMN_INGREDIENT_NAME, ingredient.getName());
+        ingredientValues.put(COLUMN_INGREDIENT_QUANTITY, ingredient.getQuantity());
+        ingredientValues.put(COLUMN_INGREDIENT_UNIT, ingredient.getUnit());
+        
+        long ingredientId = db.insert(TABLE_INGREDIENTS, null, ingredientValues);
+        
+        if (ingredientId != -1) {
+            // Then create the relationship
+            ContentValues relationValues = new ContentValues();
+            relationValues.put(COLUMN_MEAL_ID, mealId);
+            relationValues.put(COLUMN_INGREDIENT_ID, ingredientId);
+            
+            db.insert(TABLE_MEAL_INGREDIENTS, null, relationValues);
+        }
+    }
+
+    public void deleteMealIngredients(long mealId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        
+        // First get all ingredient IDs for this meal
+        String query = "SELECT " + COLUMN_INGREDIENT_ID + " FROM " + TABLE_MEAL_INGREDIENTS 
+                + " WHERE " + COLUMN_MEAL_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(mealId)});
+        
+        if (cursor.moveToFirst()) {
+            do {
+                long ingredientId = cursor.getLong(0);
+                // Delete the ingredient
+                db.delete(TABLE_INGREDIENTS, COLUMN_ID + " = ?", 
+                        new String[]{String.valueOf(ingredientId)});
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        
+        // Then delete all relationships
+        db.delete(TABLE_MEAL_INGREDIENTS, COLUMN_MEAL_ID + " = ?", 
+                new String[]{String.valueOf(mealId)});
     }
 } 

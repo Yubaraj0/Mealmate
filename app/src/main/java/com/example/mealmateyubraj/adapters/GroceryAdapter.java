@@ -59,7 +59,7 @@ public class GroceryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (categoryCompare != 0) {
                 return categoryCompare;
             }
-            return item1.getName().compareTo(item2.getName());
+            return item1.getItemName().compareTo(item2.getItemName());
         });
         
         // Group items by category
@@ -173,8 +173,8 @@ public class GroceryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             GroceryItem item = (GroceryItem) items.get(position);
             
             // Set item data
-            String displayText = String.format("%.1f %s %s", item.getQuantity(), item.getUnit(), item.getName());
-            groceryHolder.checkboxGrocery.setText(displayText);
+            groceryHolder.tvGroceryName.setText(item.getItemName());
+            groceryHolder.tvGroceryQuantity.setText(String.format("%s %s", item.getQuantity(), item.getUnit()));
             groceryHolder.checkboxGrocery.setChecked(item.isPurchased());
             
             // Show/hide purchased text
@@ -215,6 +215,62 @@ public class GroceryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     
     @Override
     public int getItemCount() {
+        return items.size();
+    }
+    
+    public void addItem(GroceryItem newItem) {
+        // Find the correct position to insert the item
+        int insertPosition = findInsertPosition(newItem);
+        
+        // If this is a new category, add the header first
+        if (!categoryPositions.containsKey(newItem.getCategory())) {
+            items.add(insertPosition, newItem.getCategory());
+            categoryPositions.put(newItem.getCategory(), insertPosition);
+            insertPosition++;
+        }
+        
+        // Add the item
+        items.add(insertPosition, newItem);
+        notifyItemInserted(insertPosition);
+        
+        // Update category positions for all categories after this one
+        updateCategoryPositions();
+    }
+    
+    private int findInsertPosition(GroceryItem newItem) {
+        // If no items exist, return 0
+        if (items.isEmpty()) {
+            return 0;
+        }
+        
+        // Find the position of the category header
+        Integer categoryPosition = categoryPositions.get(newItem.getCategory());
+        if (categoryPosition == null) {
+            // If category doesn't exist, find where to insert it
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i) instanceof String) {
+                    String category = (String) items.get(i);
+                    if (category.compareTo(newItem.getCategory()) > 0) {
+                        return i;
+                    }
+                }
+            }
+            return items.size();
+        }
+        
+        // Find the position within the category
+        int startPos = categoryPosition + 1;
+        for (int i = startPos; i < items.size(); i++) {
+            if (items.get(i) instanceof String) {
+                // We've reached the next category
+                return i;
+            }
+            GroceryItem item = (GroceryItem) items.get(i);
+            if (item.getItemName().compareTo(newItem.getItemName()) > 0) {
+                return i;
+            }
+        }
+        
         return items.size();
     }
     

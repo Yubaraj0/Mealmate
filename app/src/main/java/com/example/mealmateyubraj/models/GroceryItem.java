@@ -4,34 +4,32 @@ import java.io.Serializable;
 
 public class GroceryItem implements Serializable {
     private long id;
-    private String name;
-    private String category;
-    private double quantity;
+    private long userId;
+    private String itemName;
+    private String quantity;
     private String unit;
     private boolean purchased;
-    private long userId;
+    private String category;
     private long mealId;
 
     public GroceryItem() {
     }
 
-    public GroceryItem(String name, double quantity, String unit, long userId) {
-        this.name = name;
+    public GroceryItem(String itemName, String quantity, String unit) {
+        this.itemName = itemName;
         this.quantity = quantity;
         this.unit = unit;
-        this.userId = userId;
         this.purchased = false;
-        this.category = "General";
-        this.mealId = 0;
     }
 
-    public GroceryItem(long id, String name, String category, float quantity, String unit, boolean purchased, long userId, long mealId) {
+    public GroceryItem(long id, String name, String category, float quantity, String unit, 
+                      boolean isPurchased, long userId, long mealId) {
         this.id = id;
-        this.name = name;
+        this.itemName = name;
         this.category = category;
-        this.quantity = quantity;
+        this.quantity = String.valueOf(quantity);
         this.unit = unit;
-        this.purchased = purchased;
+        this.purchased = isPurchased;
         this.userId = userId;
         this.mealId = mealId;
     }
@@ -44,28 +42,32 @@ public class GroceryItem implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
-    public String getCategory() {
-        return category;
+    public String getItemName() {
+        return itemName;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
-    public double getQuantity() {
+    public String getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public void setQuantity(float quantity) {
+        this.quantity = String.valueOf(quantity);
     }
 
     public String getUnit() {
@@ -84,12 +86,12 @@ public class GroceryItem implements Serializable {
         this.purchased = purchased;
     }
 
-    public long getUserId() {
-        return userId;
+    public String getCategory() {
+        return category;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public long getMealId() {
@@ -100,9 +102,27 @@ public class GroceryItem implements Serializable {
         this.mealId = mealId;
     }
 
+    // Alias methods for compatibility
+    public String getName() {
+        return itemName;
+    }
+
+    public void setName(String name) {
+        this.itemName = name;
+    }
+
+    // Compatibility method for quantity as float
+    public float getQuantityAsFloat() {
+        try {
+            return Float.parseFloat(quantity);
+        } catch (NumberFormatException e) {
+            return 0.0f;
+        }
+    }
+
     @Override
     public String toString() {
-        return String.format("%s %.1f %s%s", name, quantity, unit, purchased ? " (✓)" : "");
+        return String.format("%s %s %s%s", quantity, unit, itemName, purchased ? " (✓)" : "");
     }
 
     @Override

@@ -34,6 +34,7 @@ public class GroceryDao {
 
     public GroceryDao(Context context) {
         dbHelper = new DatabaseHelper(context);
+        database = dbHelper.getWritableDatabase();
     }
 
     public void open() {
@@ -181,23 +182,28 @@ public class GroceryDao {
      * @return The grocery item, or null if not found
      */
     public GroceryItem getGroceryItemById(long id) {
-        GroceryItem item = null;
-        try {
-            Cursor cursor = database.query(
-                    DatabaseHelper.TABLE_GROCERY_ITEMS,
-                    null,
-                    DatabaseHelper.COLUMN_ID + " = ?",
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DatabaseHelper.TABLE_GROCERY_ITEMS, null,
+                DatabaseHelper.COLUMN_ID + "=?",
                     new String[]{String.valueOf(id)},
                     null, null, null);
 
             if (cursor != null && cursor.moveToFirst()) {
-                item = cursorToGroceryItem(cursor);
+            String name = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_GROCERY_NAME));
+            String category = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_GROCERY_CATEGORY));
+            String quantity = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_GROCERY_QUANTITY));
+            String unit = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_GROCERY_UNIT));
+            boolean isPurchased = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_GROCERY_IS_PURCHASED)) == 1;
+            long userId = cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_GROCERY_USER_ID));
+            long mealId = cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_GROCERY_MEAL_ID));
+
                 cursor.close();
+            return new GroceryItem(id, name, category, Float.parseFloat(quantity), unit, isPurchased, userId, mealId);
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Error getting grocery item by ID: " + e.getMessage(), e);
+        if (cursor != null) {
+            cursor.close();
         }
-        return item;
+        return null;
     }
 
     /**
@@ -278,7 +284,7 @@ public class GroceryDao {
                         // Create new grocery item
                         GroceryItem newItem = new GroceryItem();
                         newItem.setName(ingredient.getName());
-                        newItem.setQuantity(ingredient.getQuantity());
+                        newItem.setQuantity(String.valueOf(ingredient.getQuantity()));
                         newItem.setUnit(ingredient.getUnit());
                         newItem.setUserId(userId);
                         newItem.setMealId(meal.getId());
@@ -617,7 +623,7 @@ public class GroceryDao {
                         // Add new item
                         ContentValues values = new ContentValues();
                         values.put(DatabaseHelper.COLUMN_GROCERY_NAME, ingredient.getName());
-                        values.put(DatabaseHelper.COLUMN_GROCERY_QUANTITY, ingredient.getQuantity());
+                        values.put(DatabaseHelper.COLUMN_GROCERY_QUANTITY, String.valueOf(ingredient.getQuantity()));
                         values.put(DatabaseHelper.COLUMN_GROCERY_UNIT, ingredient.getUnit());
                         values.put(DatabaseHelper.COLUMN_GROCERY_USER_ID, userId);
                         values.put(DatabaseHelper.COLUMN_GROCERY_MEAL_ID, meal.getId());
@@ -704,5 +710,105 @@ public class GroceryDao {
         
         // Default
         return "Other";
+    }
+
+    public GroceryItem findGroceryItemByName(String name) {
+        try {
+            Cursor cursor = database.query(
+                    DatabaseHelper.TABLE_GROCERY_ITEMS,
+                    null,
+                    DatabaseHelper.COLUMN_GROCERY_NAME + " = ?",
+                    new String[]{name},
+                    null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                GroceryItem item = cursorToGroceryItem(cursor);
+                cursor.close();
+                return item;
+            }
+            if (cursor != null) {
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error finding grocery item by name: " + e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public long addGroceryItem(GroceryItem item) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(DatabaseHelper.COLUMN_GROCERY_NAME, item.getItemName());
+            values.put(DatabaseHelper.COLUMN_GROCERY_CATEGORY, item.getCategory());
+            values.put(DatabaseHelper.COLUMN_GROCERY_QUANTITY, item.getQuantity());
+            values.put(DatabaseHelper.COLUMN_GROCERY_UNIT, item.getUnit());
+            values.put(DatabaseHelper.COLUMN_GROCERY_IS_PURCHASED, item.isPurchased() ? 1 : 0);
+            values.put(DatabaseHelper.COLUMN_GROCERY_USER_ID, item.getUserId());
+            if (item.getMealId() > 0) {
+                values.put(DatabaseHelper.COLUMN_GROCERY_MEAL_ID, item.getMealId());
+            }
+
+            return database.insert(DatabaseHelper.TABLE_GROCERY_ITEMS, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding grocery item: " + e.getMessage(), e);
+            return -1;
+        }
+    }
+
+    public void addMealIngredientsToGroceryList(Meal meal) {
+        List<Ingredient> ingredients = meal.getIngredients();
+        for (Ingredient ingredient : ingredients) {
+            GroceryItem existingItem = findGroceryItemByName(ingredient.getName());
+            if (existingItem != null) {
+                // Update existing item
+                double currentQuantity = Double.parseDouble(existingItem.getQuantity());
+                existingItem.setQuantity(String.valueOf(currentQuantity + ingredient.getQuantity()));
+                updateGroceryItem(existingItem);
+                Log.d(TAG, "Updated existing grocery item: " + existingItem.getItemName() + 
+                          " with new quantity: " + existingItem.getQuantity());
+            } else {
+                // Create new item
+                GroceryItem newItem = new GroceryItem(ingredient.getName(), 
+                    String.valueOf(ingredient.getQuantity()), 
+                    ingredient.getUnit());
+                newItem.setMealId(meal.getId());
+                newItem.setUserId(meal.getUserId());
+                newItem.setCategory(categorizeIngredient(ingredient.getName()));
+                long id = addGroceryItem(newItem);
+                if (id != -1) {
+                    newItem.setId(id);
+                    Log.d(TAG, "Added new grocery item: " + newItem.getItemName() + 
+                              " with quantity: " + newItem.getQuantity());
+                }
+            }
+        }
+    }
+
+    public int getGroceryListsCountByUserId(long userId) {
+        try {
+            String[] columns = {"COUNT(*) as count"};
+            String selection = "user_id = ?";
+            String[] selectionArgs = {String.valueOf(userId)};
+
+            Cursor cursor = database.query(
+                    DatabaseHelper.TABLE_GROCERY_ITEMS,
+                    columns,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int count = cursor.getInt(cursor.getColumnIndexOrThrow("count"));
+                cursor.close();
+                Log.d(TAG, "Found " + count + " grocery items for user " + userId);
+                return count;
+            }
+            return 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting grocery count: " + e.getMessage(), e);
+            return 0;
+        }
     }
 } 

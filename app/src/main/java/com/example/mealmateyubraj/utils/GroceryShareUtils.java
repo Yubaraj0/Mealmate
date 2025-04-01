@@ -38,7 +38,7 @@ public class GroceryShareUtils {
             }
             
             messageBuilder.append("- ")
-                    .append(String.format("%.1f %s %s", item.getQuantity(), item.getUnit(), item.getName()))
+                    .append(String.format("%.1f %s %s", item.getQuantityAsFloat(), item.getUnit(), item.getName()))
                     .append(item.isPurchased() ? " (✓)" : "")
                     .append("\n");
         }

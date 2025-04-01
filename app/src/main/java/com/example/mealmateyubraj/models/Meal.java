@@ -1,6 +1,10 @@
 package com.example.mealmateyubraj.models;
 
+import android.util.Log;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +12,10 @@ import java.util.List;
  * Model class representing a meal/recipe
  */
 public class Meal implements Serializable {
+    private static final String TAG = "Meal";
+    private static final Gson gson = new Gson();
+    private static final Type ingredientListType = new TypeToken<List<Ingredient>>(){}.getType();
+
     private long id;
     private String name;
     private String description;
@@ -25,7 +33,7 @@ public class Meal implements Serializable {
      * Default constructor
      */
     public Meal() {
-        ingredients = new ArrayList<>();
+        this.ingredients = new ArrayList<>();
     }
 
     /**
@@ -138,7 +146,7 @@ public class Meal implements Serializable {
     }
 
     public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+        this.ingredients = ingredients != null ? ingredients : new ArrayList<>();
     }
 
     public void addIngredient(Ingredient ingredient) {
@@ -148,8 +156,16 @@ public class Meal implements Serializable {
         ingredients.add(ingredient);
     }
 
-    public int getIngredientCount() {
-        return ingredients != null ? ingredients.size() : 0;
+    public void removeIngredient(Ingredient ingredient) {
+        if (ingredients != null) {
+            ingredients.remove(ingredient);
+        }
+    }
+
+    public void clearIngredients() {
+        if (ingredients != null) {
+            ingredients.clear();
+        }
     }
 
     public int getCalories() {

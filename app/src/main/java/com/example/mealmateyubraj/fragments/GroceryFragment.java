@@ -1,6 +1,5 @@
 package com.example.mealmateyubraj.fragments;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,8 +76,8 @@ public class GroceryFragment extends Fragment {
         tvEmptyGroceries = view.findViewById(R.id.tv_empty_groceries);
         fabAddGrocery = view.findViewById(R.id.fab_add_grocery);
         
-        // Optional: Set up share button if it exists in the layout
-        View btnShare = view.findViewById(R.id.btn_share_grocery);
+        // Set up share button
+        MaterialButton btnShare = view.findViewById(R.id.btn_share_grocery);
         if (btnShare != null) {
             btnShare.setOnClickListener(v -> showSharingOptionsDialog());
         }
@@ -181,7 +181,7 @@ public class GroceryFragment extends Fragment {
         actUnit.setAdapter(unitAdapter);
         actUnit.setText("pcs", false);  // Default unit
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
         builder.setTitle("Add Grocery Item")
                 .setView(dialogView)
                 .setPositiveButton("Add", (dialog, which) -> {
@@ -197,16 +197,7 @@ public class GroceryFragment extends Fragment {
 
                     try {
                         double quantity = Double.parseDouble(quantityStr);
-                        GroceryItem item = new GroceryItem(name, quantity, unit, userId);
-                        item.setCategory(category);
-                        long id = dbHelper.addGroceryItem(item);
-                        if (id != -1) {
-                            item.setId(id);
-                            loadGroceryItems();
-                            Toast.makeText(getContext(), "Item added successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "Failed to add item", Toast.LENGTH_SHORT).show();
-                        }
+                        addNewItem(name, quantity, unit, category);
                     } catch (NumberFormatException e) {
                         Toast.makeText(getContext(), "Invalid quantity", Toast.LENGTH_SHORT).show();
                     }
@@ -223,81 +214,96 @@ public class GroceryFragment extends Fragment {
     }
 
     private void showSharingOptionsDialog() {
-        // Get only purchased items
-        List<GroceryItem> purchasedItems = adapter.getItems().stream()
-                .filter(GroceryItem::isPurchased)
-                .collect(Collectors.toList());
-
-        if (purchasedItems.isEmpty()) {
-            Toast.makeText(requireContext(), "No purchased items to share", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Format the text to share
-        StringBuilder shareText = new StringBuilder("Purchased Items:\n\n");
-        for (GroceryItem item : purchasedItems) {
-            shareText.append("✓ ").append(item.getName())
-                    .append(" (").append(item.getQuantity())
-                    .append(" ").append(item.getUnit()).append(")\n");
-        }
-
-        // Create share intent
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText.toString());
-
-        // Create chooser with specific apps
-        Intent chooser = Intent.createChooser(shareIntent, "Share via");
-        
-        // Add specific messaging apps to the chooser
-        List<Intent> targetedIntents = new ArrayList<>();
-        
-        // Add SMS intent
-        Intent smsIntent = new Intent(Intent.ACTION_SEND);
-        smsIntent.setType("text/plain");
-        smsIntent.putExtra(Intent.EXTRA_TEXT, shareText.toString());
-        smsIntent.setPackage("com.android.mms");
-        targetedIntents.add(smsIntent);
-        
-        // Add WhatsApp intent
-        Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
-        whatsappIntent.setType("text/plain");
-        whatsappIntent.putExtra(Intent.EXTRA_TEXT, shareText.toString());
-        whatsappIntent.setPackage("com.whatsapp");
-        targetedIntents.add(whatsappIntent);
-        
-        // Add Telegram intent
-        Intent telegramIntent = new Intent(Intent.ACTION_SEND);
-        telegramIntent.setType("text/plain");
-        telegramIntent.putExtra(Intent.EXTRA_TEXT, shareText.toString());
-        telegramIntent.setPackage("org.telegram.messenger");
-        targetedIntents.add(telegramIntent);
-        
-        // Add Facebook Messenger intent
-        Intent messengerIntent = new Intent(Intent.ACTION_SEND);
-        messengerIntent.setType("text/plain");
-        messengerIntent.putExtra(Intent.EXTRA_TEXT, shareText.toString());
-        messengerIntent.setPackage("com.facebook.orca");
-        targetedIntents.add(messengerIntent);
-        
-        // Add other messaging apps
-        Intent otherMessagingIntent = new Intent(Intent.ACTION_SEND);
-        otherMessagingIntent.setType("text/plain");
-        otherMessagingIntent.putExtra(Intent.EXTRA_TEXT, shareText.toString());
-        targetedIntents.add(otherMessagingIntent);
-        
-        // Create array of intents
-        Intent[] intents = targetedIntents.toArray(new Intent[0]);
-        
-        // Create and show chooser with all intents
-        Intent finalChooser = Intent.createChooser(targetedIntents.remove(0), "Share via");
-        finalChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intents);
-        
         try {
-            startActivity(finalChooser);
+            // Get all grocery items
+            List<GroceryItem> groceryItems = adapter.getItems();
+
+            if (groceryItems.isEmpty()) {
+                Toast.makeText(requireContext(), "No grocery items to share", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Create a dialog with sharing options
+            View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_share_options, null);
+            
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Share Grocery List")
+                .setView(dialogView)
+                .setNegativeButton("Cancel", null);
+            
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            
+            // Set up click listeners for sharing options
+            dialogView.findViewById(R.id.btn_share_all).setOnClickListener(v -> {
+                com.example.mealmateyubraj.utils.GroceryShareUtils.shareViaOtherApps(
+                    requireContext(), groceryItems, getString(R.string.app_name));
+                dialog.dismiss();
+            });
+            
+            dialogView.findViewById(R.id.btn_share_whatsapp).setOnClickListener(v -> {
+                com.example.mealmateyubraj.utils.GroceryShareUtils.shareViaWhatsApp(
+                    requireContext(), groceryItems, getString(R.string.app_name));
+                dialog.dismiss();
+            });
+            
+            dialogView.findViewById(R.id.btn_share_email).setOnClickListener(v -> {
+                com.example.mealmateyubraj.utils.GroceryShareUtils.shareViaEmail(
+                    requireContext(), groceryItems, getString(R.string.app_name));
+                dialog.dismiss();
+            });
+            
+            dialogView.findViewById(R.id.btn_share_sms).setOnClickListener(v -> {
+                // Show phone number input dialog
+                showPhoneNumberInputDialog(groceryItems);
+                dialog.dismiss();
+            });
+            
+            dialogView.findViewById(R.id.btn_copy_clipboard).setOnClickListener(v -> {
+                com.example.mealmateyubraj.utils.GroceryShareUtils.copyToClipboard(
+                    requireContext(), groceryItems, getString(R.string.app_name));
+                dialog.dismiss();
+            });
+            
+            dialogView.findViewById(R.id.btn_share_purchased).setOnClickListener(v -> {
+                // Filter for purchased items only
+                List<GroceryItem> purchasedItems = groceryItems.stream()
+                    .filter(GroceryItem::isPurchased)
+                    .collect(Collectors.toList());
+                
+                if (purchasedItems.isEmpty()) {
+                    Toast.makeText(requireContext(), "No purchased items to share", Toast.LENGTH_SHORT).show();
+                } else {
+                    com.example.mealmateyubraj.utils.GroceryShareUtils.shareViaOtherApps(
+                        requireContext(), purchasedItems, getString(R.string.app_name));
+                }
+                dialog.dismiss();
+            });
+
         } catch (Exception e) {
-            Toast.makeText(requireContext(), "No messaging apps found", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error showing sharing options: " + e.getMessage(), e);
+            Toast.makeText(requireContext(), "Error showing sharing options", Toast.LENGTH_SHORT).show();
         }
+    }
+    
+    private void showPhoneNumberInputDialog(List<GroceryItem> groceryItems) {
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_phone_number, null);
+        EditText etPhoneNumber = dialogView.findViewById(R.id.et_phone_number);
+        
+        new MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Enter Phone Number")
+            .setView(dialogView)
+            .setPositiveButton("Send", (dialog, which) -> {
+                String phoneNumber = etPhoneNumber.getText().toString().trim();
+                if (!phoneNumber.isEmpty()) {
+                    com.example.mealmateyubraj.utils.GroceryShareUtils.shareViaSms(
+                        requireContext(), phoneNumber, groceryItems, getString(R.string.app_name));
+                } else {
+                    Toast.makeText(requireContext(), "Please enter a phone number", Toast.LENGTH_SHORT).show();
+                }
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
     }
 
     private void showDeleteConfirmationDialog(GroceryItem item) {
@@ -363,18 +369,7 @@ public class GroceryFragment extends Fragment {
 
                     try {
                         double quantity = Double.parseDouble(quantityStr);
-                        item.setName(name);
-                        item.setQuantity(quantity);
-                        item.setCategory(category);
-                        item.setUnit(unit);
-
-                        boolean success = dbHelper.updateGroceryItem(item);
-                        if (success) {
-                            adapter.updateItem(item);
-                            Toast.makeText(getContext(), "Item updated successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "Failed to update item", Toast.LENGTH_SHORT).show();
-                        }
+                        editItem(item, name, quantity, unit, category);
                     } catch (NumberFormatException e) {
                         Toast.makeText(getContext(), "Invalid quantity", Toast.LENGTH_SHORT).show();
                     }
@@ -383,39 +378,49 @@ public class GroceryFragment extends Fragment {
                 .show();
     }
 
-    private void shareGroceryList() {
+    private void addNewItem(String name, double quantity, String unit, String category) {
+        Log.d(TAG, "Adding new item: " + name + " (" + quantity + " " + unit + ")");
         try {
-            // Get only purchased items
-            List<GroceryItem> purchasedItems = new ArrayList<>();
-            for (GroceryItem item : adapter.getItems()) {
-                if (item.isPurchased()) {
-                    purchasedItems.add(item);
-                }
+            GroceryItem newItem = new GroceryItem();
+            newItem.setItemName(name);
+            newItem.setQuantity(String.valueOf(quantity));
+            newItem.setUnit(unit);
+            newItem.setCategory(category);
+            newItem.setUserId(userId);
+            newItem.setPurchased(false);
+
+            long itemId = dbHelper.addGroceryItem(newItem);
+            if (itemId != -1) {
+                newItem.setId(itemId);
+                adapter.addItem(newItem);
+                Toast.makeText(getContext(), "Item added successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Failed to add item", Toast.LENGTH_SHORT).show();
             }
-
-            if (purchasedItems.isEmpty()) {
-                Toast.makeText(getContext(), "No purchased items to share", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Create the share text
-            StringBuilder shareText = new StringBuilder("Purchased Items:\n\n");
-            for (GroceryItem item : purchasedItems) {
-                shareText.append("✓ ").append(item.getName())
-                        .append(" (").append(item.getQuantity())
-                        .append(" ").append(item.getUnit())
-                        .append(")\n");
-            }
-
-            // Create and start the share intent
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText.toString());
-            startActivity(Intent.createChooser(shareIntent, "Share Purchased Items"));
-
         } catch (Exception e) {
-            Log.e(TAG, "Error sharing grocery list: " + e.getMessage(), e);
-            Toast.makeText(getContext(), "Error sharing grocery list", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error adding new item: " + e.getMessage(), e);
+            Toast.makeText(getContext(), "Error adding item", Toast.LENGTH_SHORT).show();
         }
     }
-} 
+
+    private void editItem(GroceryItem item, String name, double quantity, String unit, String category) {
+        Log.d(TAG, "Editing item: " + name + " (" + quantity + " " + unit + ")");
+        try {
+            item.setItemName(name);
+            item.setQuantity(String.valueOf(quantity));
+            item.setUnit(unit);
+            item.setCategory(category);
+
+            boolean success = dbHelper.updateGroceryItem(item);
+            if (success) {
+                adapter.updateItem(item);
+                Toast.makeText(getContext(), "Item updated successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Failed to update item", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error editing item: " + e.getMessage(), e);
+            Toast.makeText(getContext(), "Error updating item", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
